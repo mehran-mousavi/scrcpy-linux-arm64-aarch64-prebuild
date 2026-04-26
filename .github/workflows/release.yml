@@ -1,0 +1,59 @@
+name: Release latest archive
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: continuous-release-${{ github.repository }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Create compressed archive
+        run: |
+          set -euo pipefail
+          ARCHIVE="scrcpy-aarch64-linux-aarch64.tar.gz"
+          git archive --format=tar.gz --prefix=scrcpy-aarch64/ -o "$ARCHIVE" HEAD
+          sha256sum "$ARCHIVE" > SHA256SUMS.txt
+          ls -lh "$ARCHIVE" SHA256SUMS.txt
+
+      - name: Publish rolling "continuous" release
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          REPO="${{ github.repository }}"
+          TAG="continuous"
+          if gh release view "$TAG" --repo "$REPO" &>/dev/null; then
+            gh release delete "$TAG" --yes --cleanup-tag --repo "$REPO"
+          fi
+          BODY_FILE="$(mktemp)"
+          {
+            echo "Rolling build of repository contents at commit [\`${GITHUB_SHA:0:7}\`](https://github.com/$REPO/commit/$GITHUB_SHA)."
+            echo
+            echo "**Includes**"
+            echo "- \`scrcpy-aarch64-linux-aarch64.tar.gz\` — contents of the default branch (tracked files only), extracted under \`scrcpy-aarch64/\`."
+            echo "- \`SHA256SUMS.txt\` — checksums for verification."
+            echo
+            echo "**Stable download (always current)**"
+            echo "- \`https://github.com/$REPO/releases/latest/download/scrcpy-aarch64-linux-aarch64.tar.gz\`"
+          } > "$BODY_FILE"
+          gh release create "$TAG" \
+            scrcpy-aarch64-linux-aarch64.tar.gz \
+            SHA256SUMS.txt \
+            --repo "$REPO" \
+            --title "Latest build (continuous)" \
+            --notes-file "$BODY_FILE" \
+            --target "$GITHUB_SHA"
