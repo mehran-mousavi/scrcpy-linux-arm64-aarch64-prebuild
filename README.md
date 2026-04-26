@@ -22,11 +22,11 @@ These artifacts are **not** affiliated with Genymobile or the official scrcpy ma
 
 **Always-current archive (from the default branch):**
 
-[https://github.com/mehran-mousavi/scrcpy-aarch64/releases/latest/download/scrcpy-aarch64-linux-aarch64.tar.gz](https://github.com/mehran-mousavi/scrcpy-aarch64/releases/latest/download/scrcpy-aarch64-linux-aarch64.tar.gz)
+[https://github.com/mehran-mousavi/scrcpy-linux-arm64-aarch64-prebuild/releases/latest/download/scrcpy-aarch64-linux-aarch64.tar.gz](https://github.com/mehran-mousavi/scrcpy-linux-arm64-aarch64-prebuild/releases/latest/download/scrcpy-aarch64-linux-aarch64.tar.gz)
 
 Each push to `main` (or `master`) refreshes the rolling **continuous** release and replaces that file. Checksums are attached on the same release page as `SHA256SUMS.txt`.
 
-1. Open **[Releases](https://github.com/mehran-mousavi/scrcpy-aarch64/releases)** for notes, checksums, and history.
+1. Open **[Releases](https://github.com/mehran-mousavi/scrcpy-linux-arm64-aarch64-prebuild/releases)** for notes, checksums, and history.
 2. Or use the direct link above, then extract — contents unpack under `scrcpy-aarch64/`.
 3. The tree matches **scrcpy 3.3.4** when your committed binaries match that version (see release notes on each build).
 
